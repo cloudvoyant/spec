@@ -1,0 +1,32 @@
+services:
+  # Development service - for running the application
+  runner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mise-lib-template-runner
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    command: bash -c "mise run run"
+    stdin_open: true
+    tty: true
+    networks:
+      - lib-network
+
+  # Test service - for running tests
+  tester:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mise-lib-template-tester
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    command: bash -c "mise run test"
+    networks:
+      - lib-network
+
+networks:
+  lib-network:
+    driver: bridge

@@ -1,0 +1,165 @@
+# =============================================================================
+# mise.toml - Project configuration
+# https://mise.jdx.dev/
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Environment
+# -----------------------------------------------------------------------------
+[env]
+PROJECT                 = "mise-lib-template"
+GCP_REGISTRY_PROJECT_ID = "devops-466002"
+GCP_REGISTRY_REGION     = "us-east1"
+GCP_REGISTRY_NAME       = "cloudvoyant-generic-registry"
+VERSION                 = "{{exec(command='cat version.txt 2>/dev/null | tr -d [:space:] || echo 0.1.0')}}"
+_.path                  = ['{{config_root}}/node_modules/.bin']
+BIN_PATH                = "{{ config_root }}/node_modules/.bin"
+
+
+# -----------------------------------------------------------------------------
+# Tools
+# -----------------------------------------------------------------------------
+[tools]
+node        = "lts"
+shellcheck  = "latest"
+shfmt       = "latest"
+bats        = "latest"
+python      = "latest"
+gcloud      = "latest"
+starship    = "latest"
+claude      = "latest"
+docker-cli  = "latest"
+
+
+# =============================================================================
+# CORE DEVELOPMENT
+# =============================================================================
+
+[tasks.install]
+description = "Install dependencies"
+run         = """
+npm install --no-save --prefix "{{config_root}}" \
+  semantic-release \
+  @semantic-release/changelog \
+  @semantic-release/exec \
+  @semantic-release/git \
+  @semantic-release/github \
+  conventional-changelog-conventionalcommits
+"""
+
+[tasks.build]
+description = "Build the project"
+run         = 'echo "TODO: Implement build for $PROJECT@$VERSION"'
+
+[tasks.run]
+description = "Run project locally"
+depends     = ["build"]
+run         = 'echo "TODO: Implement run"'
+
+[tasks.test]
+description = "Run tests"
+depends     = ["build"]
+run         = 'echo "TODO: Implement test"'
+
+[tasks."clean"]
+description = "Clean build artifacts"
+run         = """
+rm -rf .tmp
+echo "TODO: Implement clean"
+"""
+
+# =============================================================================
+# DOCKER
+# =============================================================================
+
+[tasks.docker-build]
+description = "Build Docker image"
+run         = "COMPOSE_BAKE=true docker compose build"
+
+[tasks.docker-run]
+description = "Run project in Docker"
+run         = "docker compose run --rm runner"
+
+[tasks.docker-test]
+description = "Run tests in Docker"
+run         = "docker compose run --rm tester"
+
+# =============================================================================
+# UTILITIES
+# =============================================================================
+
+[tasks.format]
+description = "Format code"
+run         = 'echo "TODO: Implement formatting"'
+
+[tasks.format-check]
+description = "Check code formatting (CI mode)"
+run         = 'echo "TODO: Implement format checking"'
+
+[tasks.lint]
+description = "Lint code"
+run         = 'echo "TODO: Implement linting"'
+
+[tasks.lint-fix]
+description = "Lint and auto-fix issues"
+run         = 'echo "TODO: Implement lint auto-fixing"'
+
+
+# =============================================================================
+# CI/CD
+# =============================================================================
+
+[tasks.publish-rc]
+description = "Publish RC package for pre-release validation"
+run         = 'echo "TODO: Implement RC publishing for $PROJECT@$VERSION"'
+
+[tasks.publish]
+description = "Publish package to registry"
+depends     = ["test", "build-prod"]
+run         = """
+#!/usr/bin/env bash
+gcloud artifacts generic upload \
+    --project=$GCP_REGISTRY_PROJECT_ID \
+    --location=$GCP_REGISTRY_REGION \
+    --repository=$GCP_REGISTRY_NAME \
+    --package=$PROJECT \
+    --version=$VERSION \
+    --source=dist/artifact.txt
+"""
+
+[tasks.build-prod]
+description = "Build for production"
+run         = """
+#!/usr/bin/env bash
+mkdir -p dist
+echo "$PROJECT $VERSION - Replace with your build artifact" > dist/artifact.txt
+echo "Production artifact created: dist/artifact.txt"
+"""
+
+[tasks.version]
+description = "Get current version"
+run         = "echo $VERSION"
+
+[tasks.version-next]
+description = "Get next version (from semantic-release)"
+run         = "bash -c 'source .mise-tasks/utils && get_next_version'"
+
+# =============================================================================
+# TEMPLATE
+# =============================================================================
+
+[tasks.list-templates]
+description = "List available language templates"
+run         = "find templates/ -mindepth 1 -maxdepth 1 -type d -exec basename {} \\; | sort"
+
+[tasks.publish-templates]
+description = "Publish template packages to their respective registries"
+run         = ".mise-tasks/publish-templates"
+
+[tasks.publish-templates-rc]
+description = "Publish RC versions of template packages (CI pre-release validation)"
+run         = ".mise-tasks/publish-templates-rc"
+
+[tasks.test-template]
+description = "Run bats tests for scaffold, all templates, and docker contracts"
+run         = "bats --jobs 4 test/scaffold.bats test/scaffold-templates.bats test/docker.bats test/template-export.bats"
