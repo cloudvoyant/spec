@@ -8,18 +8,20 @@ PROJECT = "spec"
 TEMPLATE         = "mise-uv-template"
 # Read version from pyproject.toml [project].version
 VERSION = "{{exec(command='python3 -c \"import tomllib,sys; f=open(\\\"pyproject.toml\\\",\\\"rb\\\"); d=tomllib.load(f); print(d[\\\"project\\\"][\\\"version\\\"])\" 2>/dev/null || echo 0.1.0')}}"
+_.path   = ['{{config_root}}/node_modules/.bin']
 
 [tools]
 python     = "3.12"
 uv         = "latest"
 node       = "lts"
+pnpm       = "latest"
 bats       = "latest"
 shellcheck = "latest"
 shfmt      = "latest"
 
 [tasks.install]
-description = "Install Python and npm dependencies"
-run         = ["uv sync --all-extras", "npm install"]
+description = "Install Python and pnpm dependencies"
+run         = ["uv sync --all-extras", "pnpm install"]
 
 [tasks.build]
 description = "Build Python distribution packages"
