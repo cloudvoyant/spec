@@ -1,6 +1,17 @@
-# {{PROJECT_NAME}}
+Metadata-Version: 2.4
+Name: spec
+Version: 0.1.0
+Summary: Add your description here
+License: MIT
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+Requires-Dist: ruff>=0.4; extra == "dev"
+Requires-Dist: pytest>=8; extra == "dev"
 
-{{PROJECT_NAME}} is [add your project description here].
+# spec
+
+spec is [add your project description here].
 
 ## Features
 
@@ -17,7 +28,7 @@ Run `mise install` to install all tools, then `mise run install` for any additio
 
 ```bash
 git clone <your-repo>
-cd {{PROJECT_NAME}}
+cd spec
 mise install
 ```
 
@@ -63,4 +74,4 @@ Commit using conventional commits (`feat:`, `fix:`, `docs:`). Merge/push to main
 
 ---
 
-**Template**: {{TEMPLATE_NAME}} v{{TEMPLATE_VERSION}}
+**Template**: mise-lib-template v2.4.9

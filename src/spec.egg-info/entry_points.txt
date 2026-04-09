@@ -1,0 +1,2 @@
+[console_scripts]
+spec = spec.__main__:main

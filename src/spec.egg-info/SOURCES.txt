@@ -1,0 +1,12 @@
+README.md
+pyproject.toml
+src/spec/__init__.py
+src/spec/__main__.py
+src/spec/sample.py
+src/spec.egg-info/PKG-INFO
+src/spec.egg-info/SOURCES.txt
+src/spec.egg-info/dependency_links.txt
+src/spec.egg-info/entry_points.txt
+src/spec.egg-info/requires.txt
+src/spec.egg-info/top_level.txt
+tests/test_sample.py

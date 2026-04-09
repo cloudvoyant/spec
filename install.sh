@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 : <<DOCUMENTATION
-Installer script for {{PROJECT_NAME}}
+Installer script for spec
 
 Downloads and installs the latest release from GitHub.
 
 Usage:
-  curl -fsSL https://raw.githubusercontent.com/{{GITHUB_ORG}}/{{PROJECT_NAME}}/main/install.sh | bash
-  wget -qO- https://raw.githubusercontent.com/{{GITHUB_ORG}}/{{PROJECT_NAME}}/main/install.sh | bash
+  curl -fsSL https://raw.githubusercontent.com/cloudvoyant/spec/main/install.sh | bash
+  wget -qO- https://raw.githubusercontent.com/cloudvoyant/spec/main/install.sh | bash
 
 Options:
   --version VERSION    Install specific version (default: latest)
@@ -18,8 +18,8 @@ set -euo pipefail
 
 # CONFIGURATION ----------------------------------------------------------------
 DEFAULT_INSTALL_DIR="$HOME/.local/bin"
-GITHUB_ORG="{{GITHUB_ORG}}"
-GITHUB_REPO="{{PROJECT_NAME}}"
+GITHUB_ORG="cloudvoyant"
+GITHUB_REPO="spec"
 INSTALL_DIR="${INSTALL_DIR:-$DEFAULT_INSTALL_DIR}"
 VERSION="${VERSION:-latest}"
 
@@ -36,10 +36,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         -h|--help)
             cat << 'EOF'
-Installer for {{PROJECT_NAME}}
+Installer for spec
 
 Usage:
-  curl -fsSL https://raw.githubusercontent.com/{{GITHUB_ORG}}/{{PROJECT_NAME}}/main/install.sh | bash
+  curl -fsSL https://raw.githubusercontent.com/cloudvoyant/spec/main/install.sh | bash
   bash install.sh [OPTIONS]
 
 Options:
@@ -115,18 +115,18 @@ download_release() {
 
     if [ "$version" = "latest" ]; then
         log_info "Fetching latest release"
-        download_url="https://github.com/${GITHUB_ORG}/${GITHUB_REPO}/releases/latest/download/{{PROJECT_NAME}}-${platform}"
+        download_url="https://github.com/${GITHUB_ORG}/${GITHUB_REPO}/releases/latest/download/spec-${platform}"
     else
         log_info "Fetching version ${version}"
-        download_url="https://github.com/${GITHUB_ORG}/${GITHUB_REPO}/releases/download/${version}/{{PROJECT_NAME}}-${platform}"
+        download_url="https://github.com/${GITHUB_ORG}/${GITHUB_REPO}/releases/download/${version}/spec-${platform}"
     fi
 
     log_info "Downloading from: ${download_url}"
 
     if command -v curl >/dev/null 2>&1; then
-        curl -fsSL "$download_url" -o "/tmp/{{PROJECT_NAME}}"
+        curl -fsSL "$download_url" -o "/tmp/spec"
     elif command -v wget >/dev/null 2>&1; then
-        wget -qO "/tmp/{{PROJECT_NAME}}" "$download_url"
+        wget -qO "/tmp/spec" "$download_url"
     else
         log_error "Neither curl nor wget found. Please install one of them."
         exit 1
@@ -134,25 +134,25 @@ download_release() {
 }
 
 install_binary() {
-    local install_path="${INSTALL_DIR}/{{PROJECT_NAME}}"
+    local install_path="${INSTALL_DIR}/spec"
 
     # Create installation directory if it doesn't exist
     mkdir -p "$INSTALL_DIR"
 
     # Move binary to installation directory
-    mv "/tmp/{{PROJECT_NAME}}" "$install_path"
+    mv "/tmp/spec" "$install_path"
     chmod +x "$install_path"
 
-    log_success "Installed {{PROJECT_NAME}} to: $install_path"
+    log_success "Installed spec to: $install_path"
 }
 
 verify_installation() {
-    if command -v {{PROJECT_NAME}} >/dev/null 2>&1; then
-        log_success "{{PROJECT_NAME}} is now available in your PATH"
-        log_info "Version: $({{PROJECT_NAME}} --version 2>/dev/null || echo 'unknown')"
-    elif [ -x "${INSTALL_DIR}/{{PROJECT_NAME}}" ]; then
-        log_success "{{PROJECT_NAME}} installed successfully"
-        log_info "Add ${INSTALL_DIR} to your PATH to use {{PROJECT_NAME}}"
+    if command -v spec >/dev/null 2>&1; then
+        log_success "spec is now available in your PATH"
+        log_info "Version: $(spec --version 2>/dev/null || echo 'unknown')"
+    elif [ -x "${INSTALL_DIR}/spec" ]; then
+        log_success "spec installed successfully"
+        log_info "Add ${INSTALL_DIR} to your PATH to use spec"
         log_info "Example: export PATH=\"${INSTALL_DIR}:\$PATH\""
     else
         log_error "Installation verification failed"
@@ -162,7 +162,7 @@ verify_installation() {
 
 # MAIN -------------------------------------------------------------------------
 main() {
-    log_info "Installing {{PROJECT_NAME}}"
+    log_info "Installing spec"
 
     # Detect platform
     PLATFORM=$(detect_platform)

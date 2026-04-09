@@ -1,76 +1,65 @@
 # =============================================================================
-# mise.toml - Project configuration
-# https://mise.jdx.dev/
+# mise.toml - uv (Python) template
+# Overlays the base mise.toml during scaffold.
 # =============================================================================
 
-# -----------------------------------------------------------------------------
-# Environment
-# -----------------------------------------------------------------------------
 [env]
-PROJECT                 = "mise-lib-template"
-GCP_REGISTRY_PROJECT_ID = "devops-466002"
-GCP_REGISTRY_REGION     = "us-east1"
-GCP_REGISTRY_NAME       = "cloudvoyant-generic-registry"
-VERSION                 = "{{exec(command='cat version.txt 2>/dev/null | tr -d [:space:] || echo 0.1.0')}}"
-_.path                  = ['{{config_root}}/node_modules/.bin']
-BIN_PATH                = "{{ config_root }}/node_modules/.bin"
+PROJECT = "spec"
+TEMPLATE         = "mise-uv-template"
+# Read version from pyproject.toml [project].version
+VERSION = "{{exec(command='python3 -c \"import tomllib,sys; f=open(\\\"pyproject.toml\\\",\\\"rb\\\"); d=tomllib.load(f); print(d[\\\"project\\\"][\\\"version\\\"])\" 2>/dev/null || echo 0.1.0')}}"
 
-
-# -----------------------------------------------------------------------------
-# Tools
-# -----------------------------------------------------------------------------
 [tools]
-node        = "lts"
-shellcheck  = "latest"
-shfmt       = "latest"
-bats        = "latest"
-python      = "latest"
-gcloud      = "latest"
-starship    = "latest"
-claude      = "latest"
-docker-cli  = "latest"
-
-
-# =============================================================================
-# CORE DEVELOPMENT
-# =============================================================================
+python     = "3.12"
+uv         = "latest"
+node       = "lts"
+bats       = "latest"
+shellcheck = "latest"
+shfmt      = "latest"
 
 [tasks.install]
-description = "Install dependencies"
-run         = """
-npm install --no-save --prefix "{{config_root}}" \
-  semantic-release \
-  @semantic-release/changelog \
-  @semantic-release/exec \
-  @semantic-release/git \
-  @semantic-release/github \
-  conventional-changelog-conventionalcommits
-"""
+description = "Install Python dependencies"
+run         = "uv sync --all-extras"
 
 [tasks.build]
-description = "Build the project"
-run         = 'echo "TODO: Implement build for $PROJECT@$VERSION"'
+description = "Build Python distribution packages"
+depends     = ["install"]
+run         = "uv build"
 
 [tasks.run]
-description = "Run project locally"
-depends     = ["build"]
-run         = 'echo "TODO: Implement run"'
+description = "Run the project"
+depends     = ["install"]
+run         = "uv run python -m spec"
 
 [tasks.test]
-description = "Run tests"
+description = "Run pytest test suite"
+depends     = ["install"]
+run         = "uv run pytest"
+
+[tasks.lint]
+description = "Run ruff linter"
+depends     = ["install"]
+run         = "uv run ruff check ."
+
+[tasks.lint-fix]
+description = "Auto-fix ruff lint issues"
+depends     = ["install"]
+run         = "uv run ruff check --fix ."
+
+[tasks.format]
+description = "Format code with ruff"
+depends     = ["install"]
+run         = "uv run ruff format ."
+
+[tasks.format-check]
+description = "Check formatting without modifying files"
+depends     = ["install"]
+run         = "uv run ruff format --check ."
+
+[tasks.publish]
+description = "Publish package to PyPI"
 depends     = ["build"]
-run         = 'echo "TODO: Implement test"'
-
-[tasks."clean"]
-description = "Clean build artifacts"
-run         = """
-rm -rf .tmp
-echo "TODO: Implement clean"
-"""
-
-# =============================================================================
-# DOCKER
-# =============================================================================
+run         = "uv publish"
 
 [tasks.docker-build]
 description = "Build Docker image"
@@ -84,82 +73,22 @@ run         = "docker compose run --rm runner"
 description = "Run tests in Docker"
 run         = "docker compose run --rm tester"
 
-# =============================================================================
-# UTILITIES
-# =============================================================================
-
-[tasks.format]
-description = "Format code"
-run         = 'echo "TODO: Implement formatting"'
-
-[tasks.format-check]
-description = "Check code formatting (CI mode)"
-run         = 'echo "TODO: Implement format checking"'
-
-[tasks.lint]
-description = "Lint code"
-run         = 'echo "TODO: Implement linting"'
-
-[tasks.lint-fix]
-description = "Lint and auto-fix issues"
-run         = 'echo "TODO: Implement lint auto-fixing"'
-
-
-# =============================================================================
-# CI/CD
-# =============================================================================
-
-[tasks.publish-rc]
-description = "Publish RC package for pre-release validation"
-run         = 'echo "TODO: Implement RC publishing for $PROJECT@$VERSION"'
-
-[tasks.publish]
-description = "Publish package to registry"
-depends     = ["test", "build-prod"]
-run         = """
-#!/usr/bin/env bash
-gcloud artifacts generic upload \
-    --project=$GCP_REGISTRY_PROJECT_ID \
-    --location=$GCP_REGISTRY_REGION \
-    --repository=$GCP_REGISTRY_NAME \
-    --package=$PROJECT \
-    --version=$VERSION \
-    --source=dist/artifact.txt
-"""
-
-[tasks.build-prod]
-description = "Build for production"
-run         = """
-#!/usr/bin/env bash
-mkdir -p dist
-echo "$PROJECT $VERSION - Replace with your build artifact" > dist/artifact.txt
-echo "Production artifact created: dist/artifact.txt"
-"""
+[tasks.clean]
+description = "Remove build artifacts"
+run         = "rm -rf dist/ .ruff_cache/ __pycache__/ .pytest_cache/ src/*.egg-info/ .venv/"
 
 [tasks.version]
-description = "Get current version"
-run         = "echo $VERSION"
+description = "Print current version"
+run         = "python3 -c \"import tomllib; f=open('pyproject.toml','rb'); d=tomllib.load(f); print(d['project']['version'])\""
 
 [tasks.version-next]
-description = "Get next version (from semantic-release)"
-run         = "bash -c 'source .mise-tasks/utils && get_next_version'"
+description = "Preview next semantic-release version"
+run         = "mise run upversion -- --dry-run"
 
-# =============================================================================
-# TEMPLATE
-# =============================================================================
+[tasks.upversion]
+description = "Run semantic-release to version and changelog"
+run         = ".mise-tasks/upversion"
 
-[tasks.list-templates]
-description = "List available language templates"
-run         = "find templates/ -mindepth 1 -maxdepth 1 -type d -exec basename {} \\; | sort"
-
-[tasks.publish-templates]
-description = "Publish template packages to their respective registries"
-run         = ".mise-tasks/publish-templates"
-
-[tasks.publish-templates-rc]
-description = "Publish RC versions of template packages (CI pre-release validation)"
-run         = ".mise-tasks/publish-templates-rc"
-
-[tasks.test-template]
-description = "Run bats tests for scaffold, all templates, and docker contracts"
-run         = "bats --jobs 4 test/scaffold.bats test/scaffold-templates.bats test/docker.bats test/template-export.bats"
+[tasks.publish-rc]
+description = "Publish RC package to TestPyPI for pre-release validation"
+run         = ".mise-tasks/publish-rc"

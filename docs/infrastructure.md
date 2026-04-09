@@ -2,7 +2,7 @@
 
 ## Overview
 
-`{{PROJECT_NAME}}` is a [`mise`](https://mise.jdx.dev/)-powered project with automated versioning, testing, and GitHub Actions CI/CD.
+`spec` is a [`mise`](https://mise.jdx.dev/)-powered project with automated versioning, testing, and GitHub Actions CI/CD.
 
 ## Design
 
@@ -69,4 +69,4 @@ Supported for workflows that require containerization or publishing containers.
 
 ---
 
-**Template**: {{TEMPLATE_NAME}} v{{TEMPLATE_VERSION}}
+**Template**: mise-lib-template v2.4.9

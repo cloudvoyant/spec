@@ -1,5 +1,5 @@
 [project]
-name = "mise-lib-template"
+name = "spec"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -8,7 +8,7 @@ requires-python = ">=3.12"
 dependencies = []
 
 [project.scripts]
-mise-lib-template = "mise_lib_template.__main__:main"
+spec = "spec.__main__:main"
 
 [build-system]
 requires = ["setuptools>=68"]

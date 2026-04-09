@@ -234,12 +234,12 @@ apply_template() {
         sed_inplace "s/${TEMPLATE_FLAT}/${PROJECT_FLAT}/g"     "$file" || true
     done
 
-    # Rename mise_lib_template/ directory inside src/ if template created it
+    # Rename spec/ directory inside src/ if template created it
     # (directory names are not changed by sed — requires explicit mv)
-    local src_pkg_dir="$dest/src/mise_lib_template"
+    local src_pkg_dir="$dest/src/spec"
     if [[ -d "$src_pkg_dir" ]]; then
         mv "$src_pkg_dir" "$dest/src/$PROJECT_SNAKE"
-        log_info "Renamed src/mise_lib_template/ → src/$PROJECT_SNAKE/"
+        log_info "Renamed src/spec/ → src/$PROJECT_SNAKE/"
     fi
 
     log_success "$template template applied"

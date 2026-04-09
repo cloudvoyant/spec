@@ -1,4 +1,4 @@
-# mise-lib-template Style Guide
+# spec Style Guide
 
 <!-- @context: build, tools, shell -->
 
@@ -66,18 +66,6 @@ Use Conventional Commits. No Claude attributions.
 
 ---
 
-<!-- @context: test, bats -->
-
-## Testing
-
-Tests live in `test/` and use bats-core.
-
-- Run with: `mise run test-template`
-- Test files: `test/*.bats`
-- Tests cover scaffold behavior, mise.toml handling, case replacements, template cleanup
-- Add `--exclude='node_modules'` to any `rsync` calls in test setup
-
----
 
 <!-- @context: docs -->
 
@@ -124,16 +112,37 @@ Tests live in `test/` and use bats-core.
 - `README.template.md` — base README template
 
 **CLAUDE.md.append rules:**
-- Do NOT include `<!-- @context: test, bats -->` — scaffold strips sections with that marker
-- Append only language-specific conventions (commands, code style, testing patterns)
-- A `---` separator is added automatically before the appended content
 
-**Why no template-specific GitHub Actions:**
-`jdx/mise-action@v2` reads `mise.toml` and installs all declared tools (uv, zig, etc.)
-automatically. Base workflows call `mise run test`, `mise run publish`, etc. — these
-resolve to template-specific implementations via `mise.toml` task definitions.
+---
+<!-- @context: python, uv, ruff, pytest -->
 
-**Template-only scripts** (removed from scaffolded projects by scaffold cleanup):
-- `.mise-tasks/template-utils` — template discovery helpers
-- `.mise-tasks/publish-templates` — publishes template packages
-- `.mise-tasks/publish-templates-rc` — publishes RC template packages
+## Python Development (uv template)
+
+**Package manager**: Always use `uv run <cmd>`, never invoke `python` directly.
+
+**Common commands:**
+- `mise run install` — sync deps (`uv sync --all-extras`)
+- `mise run test` — run pytest
+- `mise run lint` / `mise run lint-fix` — ruff check / auto-fix
+- `mise run format` / `mise run format-check` — ruff format
+- `mise run build` — build wheel + sdist to `dist/`
+- `mise run publish` — publish to PyPI (requires `UV_PUBLISH_TOKEN`)
+
+**Adding dependencies:**
+- Runtime: `uv add <package>`
+- Dev/test only: `uv add --dev <package>`
+
+**Code style (ruff):**
+- Line length: 120 chars
+- Rules: E, F, I (isort), UP (pyupgrade), B (bugbear), SIM
+- Run `mise run lint-fix` to auto-fix, `mise run format` for formatting
+
+**Testing (pytest):**
+- Tests in `tests/` directory; run with `mise run test`
+- Stop on first failure: `uv run pytest -x`
+- Filter by name: `uv run pytest -k "test_add"`
+- Coverage: `uv run pytest --cov=src`
+
+**Publishing:**
+- `mise run publish` — calls `uv publish`
+- Set `UV_PUBLISH_TOKEN` env var or use PyPI trusted publishing (OIDC) in CI

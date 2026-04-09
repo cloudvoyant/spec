@@ -1,4 +1,4 @@
-Help me migrate this project to the latest mise-lib-template version using a spec-driven approach.
+Help me migrate this project to the latest spec version using a spec-driven approach.
 
 ## Overview
 
@@ -37,7 +37,7 @@ If your project is on **1.x** (has `justfile`, `.envrc`, `scripts/`), you are mi
 After migration, mark the version by adding a comment at the top of `mise.toml`:
 
 ```toml
-# Template: mise-lib-template v2.x
+# Template: spec v2.x
 ```
 
 ---
@@ -49,7 +49,7 @@ After migration, mark the version by adding a comment at the top of `mise.toml`:
 Check the template version this project is currently using. With mise-based projects (2.x), look for a comment at the top of `mise.toml`:
 
 ```toml
-# Template: mise-lib-template v2.x
+# Template: spec v2.x
 ```
 
 If no version comment exists, check `git log --oneline | head -20` to find when the project was scaffolded. Projects without `mise.toml` as their primary config are on 1.x.
@@ -64,7 +64,7 @@ mkdir -p .tmp
 if [ -d ".tmp/template-upstream-main" ]; then
     cd .tmp/template-upstream-main && git pull && cd ../..
 else
-    git clone https://github.com/cloudvoyant/mise-lib-template .tmp/template-upstream-main
+    git clone https://github.com/cloudvoyant/spec .tmp/template-upstream-main
 fi
 ```
 
@@ -77,7 +77,7 @@ Create `.claude/plan.md` with a structured migration plan:
 
 ## Overview
 
-Migrate from mise-lib-template v<current> to v<target>
+Migrate from spec v<current> to v<target>
 
 ## Files to Review
 
@@ -197,7 +197,7 @@ mise run test
 After all changes applied, update the template version comment in `mise.toml`:
 
 ```toml
-# Template: mise-lib-template v<new-version>
+# Template: spec v<new-version>
 ```
 
 ### 6. Final Validation
@@ -235,7 +235,7 @@ If there's no template version comment in `mise.toml`, add one:
 
 ```bash
 # Add at the top of mise.toml (after # mise.toml header comment)
-# Template: mise-lib-template v<version>
+# Template: spec v<version>
 ```
 
 ### Conflicting Changes

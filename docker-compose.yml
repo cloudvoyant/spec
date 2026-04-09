@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: mise-lib-template-runner
+    container_name: spec-runner
     volumes:
       - .:/workspace
     working_dir: /workspace
@@ -19,7 +19,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: mise-lib-template-tester
+    container_name: spec-tester
     volumes:
       - .:/workspace
     working_dir: /workspace

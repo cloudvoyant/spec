@@ -33,9 +33,6 @@ jobs:
       - name: Run tests
         run: mise run test
 
-      - name: Run template tests
-        run: mise run test-template
-
       - name: Create new version
         id: upversion
         env:
@@ -81,9 +78,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Publish template packages
-        if: steps.upversion.outputs.new_release_published == 'true'
-        run: mise run publish-templates
-        env:
-          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

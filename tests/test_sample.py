@@ -1,4 +1,4 @@
-from mise_lib_template.sample import add
+from spec.sample import add
 
 
 def test_add() -> None:

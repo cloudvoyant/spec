@@ -1,6 +1,6 @@
-# {{PROJECT_NAME}} Development Guide
+# spec Development Guide
 
-Generated from {{TEMPLATE_NAME}} v{{TEMPLATE_VERSION}}.
+Generated from mise-lib-template v2.4.9.
 
 ## Prerequisites
 
@@ -25,7 +25,7 @@ mise run format-check
 ## Project Structure
 
 ```
-src/{{PROJECT_NAME}}/      # Library source
+src/spec/      # Library source
 tests/                      # pytest tests
 pyproject.toml              # Package metadata, ruff/pytest config
 mise.toml                   # Task runner and tool versions
@@ -33,7 +33,7 @@ mise.toml                   # Task runner and tool versions
 
 ## Development Workflow
 
-1. **Add a feature**: write code in `src/{{PROJECT_NAME}}/`, add tests in `tests/`
+1. **Add a feature**: write code in `src/spec/`, add tests in `tests/`
 2. **Check quality**: `mise run lint && mise run format-check`
 3. **Run tests**: `mise run test`
 4. **Fix issues**: `mise run lint-fix && mise run format`

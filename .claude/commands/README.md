@@ -38,7 +38,6 @@ claude plugin install claudevoyant
 ### Template Commands (in this directory)
 
 - `/upgrade` - Migrate project to latest template version
-- `/adapt` - Adapt template to your project's needs (template-only, auto-deletes after use)
 
 ### Plugin Commands (from Claudevoyant)
 
