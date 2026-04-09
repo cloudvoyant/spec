@@ -1,3 +1,12 @@
+# 1.0.0 (2026-04-09)
+
+
+### Bug Fixes
+
+* add package.json so semantic-release plugins resolve correctly ([cbaea29](https://github.com/cloudvoyant/spec/commit/cbaea298a2bfb01c659afcf7f2bf3ef5399cdf9a))
+* install semantic-release plugins via mise npm tools ([36a1671](https://github.com/cloudvoyant/spec/commit/36a16710e0d20e3633650be004c7c69ba625839a))
+* resolve semantic-release from node_modules/.bin in CI ([a9c1ff2](https://github.com/cloudvoyant/spec/commit/a9c1ff2c50528b83b212d89c576411ff6a6b12fe))
+
 ## [2.4.9](https://github.com/cloudvoyant/spec/compare/v2.4.8...v2.4.9) (2026-03-08)
 
 ### Bug Fixes
