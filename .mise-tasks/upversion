@@ -50,8 +50,15 @@ source "$(dirname "$0")/utils"
 
 log_info "Running semantic-release"
 
-# Check if semantic-release is available
-if ! command_exists semantic-release; then
+# Resolve semantic-release binary: prefer local node_modules/.bin, then PATH
+SEMANTIC_RELEASE_BIN=""
+if [ -n "${PROJECT_ROOT:-}" ] && [ -x "$PROJECT_ROOT/node_modules/.bin/semantic-release" ]; then
+    SEMANTIC_RELEASE_BIN="$PROJECT_ROOT/node_modules/.bin/semantic-release"
+elif [ -x "$(pwd)/node_modules/.bin/semantic-release" ]; then
+    SEMANTIC_RELEASE_BIN="$(pwd)/node_modules/.bin/semantic-release"
+elif command_exists semantic-release; then
+    SEMANTIC_RELEASE_BIN="semantic-release"
+else
     log_error "semantic-release not found. Run: mise install"
     exit 1
 fi
@@ -62,11 +69,11 @@ CURRENT_VERSION=$(get_version)
 # Run semantic-release
 if [ -n "$CI" ]; then
     log_info "Running in CI mode - will create release and push"
-    semantic-release
+    "$SEMANTIC_RELEASE_BIN"
     EXIT_CODE=$?
 else
     log_info "Running in local mode - dry-run only (no tags will be created)"
-    semantic-release --dry-run
+    "$SEMANTIC_RELEASE_BIN" --dry-run
     EXIT_CODE=$?
 fi
 

@@ -201,13 +201,20 @@ get_version() {
 
 # Get next version from semantic-release (dry-run)
 get_next_version() {
-    if ! command -v semantic-release &>/dev/null; then
+    local sr_bin=""
+    if [ -n "${PROJECT_ROOT:-}" ] && [ -x "$PROJECT_ROOT/node_modules/.bin/semantic-release" ]; then
+        sr_bin="$PROJECT_ROOT/node_modules/.bin/semantic-release"
+    elif [ -x "$(pwd)/node_modules/.bin/semantic-release" ]; then
+        sr_bin="$(pwd)/node_modules/.bin/semantic-release"
+    elif command -v semantic-release &>/dev/null; then
+        sr_bin="semantic-release"
+    else
         log_error "semantic-release not found. Run: mise install"
         return 1
     fi
 
     local next_version
-    next_version=$(semantic-release --dry-run 2>/dev/null | grep "The next release version is" | awk '{print $NF}')
+    next_version=$("$sr_bin" --dry-run 2>/dev/null | grep "The next release version is" | awk '{print $NF}')
 
     if [[ -z "$next_version" ]]; then
         log_warn "Could not determine next version from semantic-release"
