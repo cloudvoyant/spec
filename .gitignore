@@ -33,7 +33,6 @@ vendor/
 
 # Package manager files
 *.lock
-package-lock.json
 yarn.lock
 pnpm-lock.yaml
 Gemfile.lock
