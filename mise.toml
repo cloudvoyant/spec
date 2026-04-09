@@ -16,9 +16,16 @@ node       = "lts"
 bats       = "latest"
 shellcheck = "latest"
 shfmt      = "latest"
+"npm:semantic-release"                         = "latest"
+"npm:@semantic-release/commit-analyzer"        = "latest"
+"npm:@semantic-release/release-notes-generator" = "latest"
+"npm:@semantic-release/changelog"              = "latest"
+"npm:@semantic-release/exec"                   = "latest"
+"npm:@semantic-release/git"                    = "latest"
+"npm:@semantic-release/github"                 = "latest"
 
 [tasks.install]
-description = "Install Python dependencies"
+description = "Install Python and npm dependencies"
 run         = "uv sync --all-extras"
 
 [tasks.build]
